@@ -3,6 +3,7 @@
 
 
 dist.zip **download**
+start main.exe
 
 
 ## Start
