@@ -127,4 +127,9 @@ def play(week, start):
 
     print("end")
 
+# 실행
+# 여러 동영상을 실행시키고 싶을 경우
+# play(6, 3)
+# play(7, 1)
+# play(8, 1)
 play(week, start)
