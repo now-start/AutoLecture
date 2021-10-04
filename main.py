@@ -47,79 +47,84 @@ week = int(input("Week(current : 0) : "))
 # 강의 목록
 start = int(input("n ~ end(first ~ end : 1) : "))
 
-# 강의 재생 목록
-if week == 0:
-    vod = driver.find_elements_by_xpath(
-        '//div[@class="course_box course_box_current"]//a[contains(@href,"https://lms.yc.ac.kr/mod/vod/")]')
-else:
-    xpath = "// *[ @ id = 'section-"
-    xpath += str(week)
-    xpath += "']//a[contains(@href,'https://lms.yc.ac.kr/mod/vod/')]"
-    vod = driver.find_elements_by_xpath(xpath)
-
-print('------------------------------------------------------------------------------------\n')
-
-# 강의 재생
-pp = 1
-for i in vod:
-    # 강의 패스
-    if pp != start:
-        pp = pp + 1
-        continue
+def play(week, start):
+    # 강의 재생 목록
+    if week == 0:
+        vod = driver.find_elements_by_xpath(
+            '//div[@class="course_box course_box_current"]//a[contains(@href,"https://lms.yc.ac.kr/mod/vod/")]')
     else:
-        driver.maximize_window()
-        i.click()
-        window_before = driver.window_handles[0]
-        window_after = driver.window_handles[1]
-        driver.minimize_window()
-        driver.switch_to.window(window_after)
-        driver.implicitly_wait(10)
+        xpath = "// *[ @ id = 'section-"
+        xpath += str(week)
+        xpath += "']//a[contains(@href,'https://lms.yc.ac.kr/mod/vod/')]"
+        vod = driver.find_elements_by_xpath(xpath)
 
-        # 플레이
-        try:
-            Alert(driver).accept()
-        except:
-            driver.find_element_by_xpath('//div[@class="jw-icon jw-icon-display jw-button-color jw-reset"]').send_keys(
-                Keys.ENTER)
-            driver.find_element_by_xpath(
-                '//div[@class="jw-icon jw-icon-inline jw-button-color jw-reset jw-icon-playback"]').send_keys(Keys.ENTER)
-            driver.find_element_by_xpath('//*[@id="vod_player"]/div[8]/div[4]/div[1]/div[1]').send_keys(Keys.ENTER)
+    print('------------------------------------------------------------------------------------\n')
 
-        driver.minimize_window()
-        time.sleep(20)
+    # 강의 재생
+    pp = 1
+    for i in vod:
+        # 강의 패스
+        if pp != start:
+            pp = pp + 1
+            continue
+        else:
+            driver.maximize_window()
+            driver.implicitly_wait(10)
+            i.click()
+            window_before = driver.window_handles[0]
+            window_after = driver.window_handles[1]
+            driver.minimize_window()
+            driver.switch_to.window(window_after)
+            driver.implicitly_wait(10)
 
-        # 제목 출력
-        title = driver.find_element_by_xpath('/html/head/title').get_attribute('outerHTML')
-        title = title.split(">")[1]
-        title = title.split("<")[0]
-        print(title)
+            # 플레이
+            try:
+                Alert(driver).accept()
+            except:
+                driver.find_element_by_xpath('//div[@class="jw-icon jw-icon-display jw-button-color jw-reset"]').send_keys(
+                    Keys.ENTER)
+                driver.find_element_by_xpath(
+                    '//div[@class="jw-icon jw-icon-inline jw-button-color jw-reset jw-icon-playback"]').send_keys(Keys.ENTER)
+                driver.find_element_by_xpath('//*[@id="vod_player"]/div[8]/div[4]/div[1]/div[1]').send_keys(Keys.ENTER)
 
-        # 플레이 타임 설정
-        end_time = driver.find_element_by_xpath('//span[@class="jw-text jw-reset jw-text-duration"]').get_attribute(
-            'outerHTML')
-        end_time = end_time.split(">")[1]
-        end_time = end_time.split("<")[0]
-        end_time = int(end_time.split(":")[0]) * 60 + int(end_time.split(":")[1])
+            driver.minimize_window()
+            time.sleep(20)
 
-        current_time = driver.find_element_by_xpath('//span[@class="jw-text jw-reset jw-text-elapsed"]').get_attribute(
-            'outerHTML')
-        current_time = current_time.split(">")[1]
-        current_time = current_time.split("<")[0]
-        current_time = int(current_time.split(":")[0]) * 60 + int(current_time.split(":")[1])
+            # 제목 출력
+            title = driver.find_element_by_xpath('/html/head/title').get_attribute('outerHTML')
+            title = title.split(">")[1]
+            title = title.split("<")[0]
+            print(title)
 
-        print(current_time)
-        print(end_time)
+            # 플레이 타임 설정
+            end_time = driver.find_element_by_xpath('//span[@class="jw-text jw-reset jw-text-duration"]').get_attribute(
+                'outerHTML')
+            end_time = end_time.split(">")[1]
+            end_time = end_time.split("<")[0]
+            end_time = int(end_time.split(":")[0]) * 60 + int(end_time.split(":")[1])
 
-        time.sleep(end_time - current_time)
-        while end_time - current_time:
-            current_time = driver.find_element_by_xpath(
-                '//span[@class="jw-text jw-reset jw-text-elapsed"]').get_attribute(
+            current_time = driver.find_element_by_xpath('//span[@class="jw-text jw-reset jw-text-elapsed"]').get_attribute(
                 'outerHTML')
             current_time = current_time.split(">")[1]
             current_time = current_time.split("<")[0]
             current_time = int(current_time.split(":")[0]) * 60 + int(current_time.split(":")[1])
 
-        driver.close()
-        driver.switch_to.window(window_before)
+            print(current_time)
+            print(end_time)
 
-print("end")
+            time.sleep(end_time - current_time)
+            while end_time - current_time:
+                current_time = driver.find_element_by_xpath(
+                    '//span[@class="jw-text jw-reset jw-text-elapsed"]').get_attribute(
+                    'outerHTML')
+                current_time = current_time.split(">")[1]
+                current_time = current_time.split("<")[0]
+                current_time = int(current_time.split(":")[0]) * 60 + int(current_time.split(":")[1])
+
+            driver.switch_to.window(window_after)
+            driver.close()
+            driver.switch_to.window(window_before)
+
+    print("end")
+
+play(week, start)
