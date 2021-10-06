@@ -1,9 +1,11 @@
 # AutoLecture
 강의 도우미
 
+**download** dist.zip
 
-dist.zip **download**
-start main.exe
+**start** main.exe
+
+**필요에 따라 main.py를 수정하여 사용**
 
 
 ## Start
